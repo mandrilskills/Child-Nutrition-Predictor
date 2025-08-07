@@ -1,0 +1,201 @@
+Age,Gender,Weight,Height,Has_Regular_Meals,Eats_Fruits_Veggies,Clean_Drinking_Water,Nutrition_Status
+5,Male,25.1,100.7,Yes,No,Yes,At Risk
+6,Male,28.5,107.3,Yes,No,No,At Risk
+7,Male,23.6,127.2,Yes,Yes,No,At Risk
+1,Male,24,116.6,Yes,Yes,Yes,Healthy
+4,Male,30.4,129.3,Yes,No,No,At Risk
+5,Male,37.3,73,Yes,Yes,Yes,Malnourished
+1,Male,25.6,103,No,Yes,Yes,At Risk
+7,Male,11.1,70,Yes,Yes,No,Malnourished
+7,Male,36.9,141,Yes,Yes,Yes,Healthy
+5,Male,17.4,93.3,Yes,Yes,Yes,Healthy
+9,Male,10.2,122.2,Yes,No,No,Malnourished
+10,Female,19.3,85.3,Yes,Yes,No,Malnourished
+10,Male,33.1,92.4,Yes,No,No,At Risk
+9,Female,12.2,98.7,Yes,Yes,Yes,Malnourished
+12,Male,34.1,121,No,Yes,Yes,At Risk
+1,Male,12.5,93.7,No,No,Yes,Malnourished
+5,Male,32.3,112.2,Yes,Yes,No,At Risk
+6,Female,30.9,139.6,Yes,Yes,No,At Risk
+3,Female,25.9,110,Yes,Yes,Yes,Healthy
+12,Female,35.6,76.9,Yes,Yes,Yes,Malnourished
+4,Male,27.1,91.7,Yes,No,Yes,At Risk
+6,Female,25.1,123,Yes,No,Yes,At Risk
+1,Male,33.3,78.8,Yes,Yes,Yes,Malnourished
+7,Female,14.4,112.5,No,Yes,Yes,Malnourished
+6,Male,13.8,103.9,No,No,No,Malnourished
+8,Male,37.1,71.6,Yes,Yes,Yes,Malnourished
+5,Female,35.9,146.3,No,No,No,At Risk
+4,Female,14.2,124.2,Yes,No,No,Malnourished
+11,Female,10.4,108.8,Yes,No,No,Malnourished
+1,Female,33,147.4,No,No,No,At Risk
+1,Female,26.2,86.6,Yes,No,No,Malnourished
+8,Female,10,85.1,No,Yes,No,Malnourished
+6,Male,23,84.2,No,Yes,Yes,Malnourished
+8,Male,29.7,100,No,No,Yes,At Risk
+5,Female,25.9,118.4,Yes,No,Yes,At Risk
+4,Male,10.3,136.8,Yes,No,No,Malnourished
+9,Male,38.2,147.1,Yes,No,Yes,At Risk
+7,Male,14.4,127.5,No,No,No,Malnourished
+9,Male,14.9,86.2,Yes,No,Yes,Malnourished
+10,Female,38.8,117,No,Yes,Yes,At Risk
+6,Female,10.6,147.7,No,Yes,Yes,Malnourished
+11,Male,11.6,147.9,Yes,No,Yes,Malnourished
+7,Female,10.9,113.7,No,Yes,Yes,Malnourished
+11,Male,12.7,84,Yes,Yes,No,Malnourished
+11,Male,26.8,86.6,No,Yes,Yes,Malnourished
+3,Female,30.5,106,No,No,Yes,At Risk
+6,Male,13.1,142.4,Yes,No,Yes,Malnourished
+9,Female,21.7,118.4,Yes,No,No,At Risk
+10,Female,17.3,104.2,No,No,Yes,At Risk
+2,Female,33.8,147.5,Yes,No,No,At Risk
+11,Male,36.5,120.2,No,No,Yes,At Risk
+8,Male,18.8,85,Yes,Yes,No,Malnourished
+12,Female,24.1,107.1,No,No,No,At Risk
+8,Male,11.2,138.6,Yes,No,Yes,Malnourished
+4,Female,21.6,81.2,No,No,No,Malnourished
+8,Male,24.9,132.5,No,Yes,No,At Risk
+7,Female,39.1,131.4,No,No,Yes,At Risk
+2,Male,29.2,107.6,No,Yes,Yes,At Risk
+9,Male,19.9,100.4,No,No,No,At Risk
+3,Female,23.3,82.1,No,No,Yes,Malnourished
+6,Female,30.8,145.7,No,No,Yes,At Risk
+4,Male,14.3,136.7,No,No,No,Malnourished
+12,Male,30.6,136.4,Yes,No,No,At Risk
+12,Female,22.2,107.3,No,No,Yes,At Risk
+2,Male,24.9,149,Yes,No,No,At Risk
+9,Male,18,102.7,Yes,Yes,No,At Risk
+9,Female,26.8,87.8,No,Yes,Yes,Malnourished
+8,Female,38.1,129.2,Yes,No,No,At Risk
+4,Female,11.7,109.3,No,No,No,Malnourished
+7,Male,12.1,123.9,No,No,No,Malnourished
+11,Female,38.7,124.4,Yes,Yes,Yes,Healthy
+9,Female,17.2,114.5,Yes,Yes,No,At Risk
+4,Male,18.9,75,No,Yes,Yes,Malnourished
+10,Female,15.8,88.3,No,No,No,Malnourished
+2,Female,27.2,71.6,Yes,Yes,No,Malnourished
+9,Female,39.5,125.5,Yes,No,Yes,At Risk
+8,Female,36.3,127.7,No,Yes,No,At Risk
+6,Female,26.5,101.3,Yes,No,No,At Risk
+10,Male,24.2,98.3,Yes,Yes,Yes,Healthy
+3,Male,19.5,85.3,No,No,Yes,Malnourished
+8,Male,19.7,87.9,No,Yes,No,Malnourished
+10,Male,18.8,105.8,No,Yes,No,At Risk
+12,Female,22.7,128.8,No,Yes,Yes,At Risk
+8,Male,12.2,92.1,No,Yes,No,Malnourished
+3,Male,36.8,72.6,Yes,Yes,No,Malnourished
+1,Male,19.1,126.6,Yes,No,Yes,At Risk
+12,Female,17.9,101.4,Yes,No,No,At Risk
+3,Male,20.7,85.2,Yes,No,Yes,Malnourished
+8,Female,18.5,125.9,No,No,No,At Risk
+5,Female,13.9,128,No,No,No,Malnourished
+6,Female,27,96,No,No,No,At Risk
+8,Female,12.6,145.3,No,Yes,Yes,Malnourished
+2,Female,29.3,102.7,No,No,Yes,At Risk
+5,Male,17.7,113.8,Yes,Yes,Yes,Healthy
+9,Female,17.4,112.7,No,Yes,No,At Risk
+6,Male,10.6,89.6,No,No,No,Malnourished
+2,Female,21.4,76,No,No,Yes,Malnourished
+12,Female,36.8,72.5,No,No,No,Malnourished
+7,Male,22.4,96.7,No,Yes,No,At Risk
+4,Male,23.8,111.5,Yes,Yes,No,At Risk
+9,Female,18.6,114.4,Yes,No,No,At Risk
+7,Male,18.4,91.6,No,No,Yes,At Risk
+4,Female,37.7,130.5,Yes,No,Yes,At Risk
+8,Female,22.2,136.1,Yes,Yes,No,At Risk
+4,Female,12.6,78.2,No,Yes,Yes,Malnourished
+8,Male,33.6,134.2,No,No,Yes,At Risk
+8,Female,18.5,129.3,Yes,Yes,No,At Risk
+6,Female,39.2,96.2,No,Yes,Yes,At Risk
+12,Female,23.5,96,No,Yes,No,At Risk
+11,Male,20.2,70.4,Yes,No,Yes,Malnourished
+11,Female,14.8,123,No,Yes,Yes,Malnourished
+12,Female,17.4,100.5,No,No,No,At Risk
+12,Female,34.3,133.1,No,Yes,Yes,At Risk
+1,Female,24.7,139.2,No,No,Yes,At Risk
+9,Female,32.3,130.3,No,No,Yes,At Risk
+9,Female,35.7,148.1,No,Yes,Yes,At Risk
+11,Female,32.3,90.6,Yes,Yes,Yes,Healthy
+12,Female,11.3,148,No,No,No,Malnourished
+1,Female,32.4,75,No,Yes,No,Malnourished
+1,Female,22.5,119.7,No,No,No,At Risk
+12,Female,11.5,127.4,No,Yes,No,Malnourished
+5,Male,15,104,Yes,No,No,At Risk
+4,Male,36.3,147.7,Yes,No,No,At Risk
+12,Male,38.4,145.1,No,No,No,At Risk
+3,Male,27.8,83.6,Yes,No,No,Malnourished
+5,Female,29.2,130.3,No,No,No,At Risk
+1,Male,11.1,126.8,Yes,Yes,No,Malnourished
+1,Female,35.7,74.8,Yes,No,Yes,Malnourished
+10,Male,29.9,75.9,Yes,No,Yes,Malnourished
+5,Male,25.9,130.2,No,Yes,Yes,At Risk
+9,Female,34.7,125.9,No,Yes,No,At Risk
+10,Male,37.6,147,Yes,No,No,At Risk
+5,Male,16.9,101.8,No,No,No,At Risk
+3,Male,17.7,147,Yes,No,No,At Risk
+2,Female,23.1,82.7,Yes,No,No,Malnourished
+1,Female,35.3,116.2,Yes,No,Yes,At Risk
+11,Female,12.1,115.9,Yes,Yes,No,Malnourished
+3,Female,12.1,73.5,Yes,No,No,Malnourished
+4,Male,25.3,145.5,Yes,Yes,Yes,Healthy
+8,Male,18.1,129.4,No,Yes,No,At Risk
+3,Female,15,87.4,Yes,No,Yes,Malnourished
+2,Female,37.1,135,No,Yes,Yes,At Risk
+12,Female,10,83.9,No,No,Yes,Malnourished
+8,Male,11.5,104.7,No,Yes,Yes,Malnourished
+10,Male,27.1,128.4,Yes,No,Yes,At Risk
+11,Male,38.7,144,Yes,No,Yes,At Risk
+10,Male,26.6,136,No,No,No,At Risk
+11,Male,24,94.6,Yes,Yes,No,At Risk
+3,Female,27.7,90.6,No,No,No,At Risk
+3,Female,25.1,125.5,No,Yes,No,At Risk
+8,Female,34.3,146.4,Yes,Yes,No,At Risk
+12,Male,23.1,147.8,Yes,Yes,Yes,Healthy
+9,Male,13.4,130.6,No,No,Yes,Malnourished
+7,Female,37,108.9,No,Yes,Yes,At Risk
+1,Female,25.4,99.6,Yes,Yes,Yes,Healthy
+7,Male,36.3,81.7,Yes,Yes,Yes,Malnourished
+2,Male,37.6,107.9,Yes,Yes,No,At Risk
+6,Female,17.8,90.2,No,No,No,At Risk
+9,Male,31.3,124.5,Yes,No,Yes,At Risk
+12,Male,14,83.7,Yes,Yes,Yes,Malnourished
+10,Female,27.9,101.4,Yes,No,Yes,At Risk
+2,Female,34.4,85.2,Yes,Yes,Yes,Malnourished
+6,Male,36.4,73,Yes,Yes,No,Malnourished
+3,Male,14.5,137.7,Yes,Yes,No,Malnourished
+10,Female,30.1,89,Yes,No,Yes,Malnourished
+2,Male,22.4,79.3,No,Yes,Yes,Malnourished
+11,Female,32.7,99.6,No,No,Yes,At Risk
+10,Female,19.8,94.4,No,Yes,Yes,At Risk
+4,Female,12.7,99.2,No,No,Yes,Malnourished
+7,Male,10.6,89.7,Yes,Yes,Yes,Malnourished
+4,Male,13.6,134.5,Yes,No,Yes,Malnourished
+3,Male,14.1,101.5,Yes,Yes,No,Malnourished
+12,Male,11.4,107.1,Yes,No,Yes,Malnourished
+11,Female,17,130.2,No,Yes,No,At Risk
+8,Female,31.5,97.6,No,Yes,No,At Risk
+10,Female,29.1,70.6,No,No,No,Malnourished
+2,Male,39.9,98,No,No,Yes,At Risk
+8,Male,15.1,139.8,Yes,Yes,Yes,Healthy
+1,Female,30.1,93.1,Yes,No,Yes,At Risk
+3,Female,25.7,126.8,No,No,Yes,At Risk
+12,Female,10.2,128.9,No,Yes,No,Malnourished
+1,Male,33.6,70.9,No,Yes,Yes,Malnourished
+3,Male,24.2,83.6,No,Yes,Yes,Malnourished
+3,Male,30.8,84.6,Yes,Yes,No,Malnourished
+10,Female,31.2,105.7,Yes,Yes,No,At Risk
+10,Male,19.5,136.2,Yes,Yes,Yes,Healthy
+3,Male,24.9,96.2,No,No,No,At Risk
+3,Male,10.2,128.1,Yes,No,Yes,Malnourished
+6,Female,28,133.6,Yes,No,Yes,At Risk
+6,Male,36,78.3,No,Yes,Yes,Malnourished
+1,Male,39.8,103.2,Yes,Yes,Yes,Healthy
+7,Male,14.4,84.5,No,Yes,No,Malnourished
+6,Male,21.9,96,Yes,No,Yes,At Risk
+6,Male,35.1,111.3,Yes,Yes,Yes,Healthy
+9,Male,17.7,74.2,No,Yes,No,Malnourished
+12,Male,24,112,No,No,Yes,At Risk
+11,Female,12.7,90.8,Yes,No,No,Malnourished
+4,Female,24,108.9,No,No,Yes,At Risk
+7,Male,28,99.9,No,No,Yes,At Risk
+7,Male,37.3,85.3,No,Yes,Yes,Malnourished
