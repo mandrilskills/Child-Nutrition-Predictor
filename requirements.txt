@@ -1,3 +1,9 @@
-streamlit
-pandas
-scikit-learn
+streamlit==1.32.0
+pandas==2.2.0
+scikit-learn==1.4.0
+m2cgen==0.10.0
+langchain==0.1.12
+langchain-google-genai
+langgraph==0.0.26
+python-dotenv==1.0.1
+fpdf2==2.7.8
