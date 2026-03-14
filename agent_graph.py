@@ -1,11 +1,21 @@
+import asyncio
 from typing import TypedDict, Annotated, Sequence
 import operator
 from langchain_core.messages import BaseMessage, SystemMessage
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langgraph.graph import StateGraph, END
 
+# --- ASYNCIO EVENT LOOP FIX FOR STREAMLIT ---
+# Streamlit threads do not have an event loop by default. 
+# We must create one so the Gemini gRPC client can initialize properly.
+try:
+    asyncio.get_running_loop()
+except RuntimeError:
+    asyncio.set_event_loop(asyncio.new_event_loop())
+# --------------------------------------------
+
 # Initialize the Gemini LLM 
-# Ensure you have GOOGLE_API_KEY in your .env file or Streamlit Secrets
+# Ensure you have GOOGLE_API_KEY in your .env file locally, or in Streamlit Secrets
 llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.2)
 
 # 1. Define the State
@@ -33,7 +43,7 @@ def unicef_guideline_agent(state: ClinicalState):
                 f"Address the exact deficits (e.g., if clean water is 'No', mention WASH guidelines. If meals are irregular, mention RUTFs or calorie density). "
                 f"Keep it professional, bulleted, and directly applicable."
     )
-    # Pass previous messages so the agent has full context
+    # Pass previous messages so the agent has full context from the explainer
     response = llm.invoke([sys_prompt] + state["messages"]) 
     return {"messages": [response]}
 
