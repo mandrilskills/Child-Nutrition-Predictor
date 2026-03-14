@@ -25,6 +25,7 @@ def clinical_explainer(state: ClinicalState):
                 f"Analyze this patient data: {state['patient_data']}. Explain briefly (2-3 sentences) why this prediction makes sense. "
                 f"If the child is Healthy, explain what lifestyle factors are contributing to this positive outcome."
     )
+    # 1. Invoke fresh to avoid Gemini Role Errors
     response = llm.invoke([prompt])
     return {"messages": [response]}
 
@@ -44,7 +45,8 @@ def unicef_guideline_agent(state: ClinicalState):
                 f"\n\nINSTRUCTIONS:"
                 f"\nProvide 3-4 specific, actionable measures. Keep it professional, bulleted, and highly concise."
     )
-    response = llm.invoke(list(state["messages"]) + [prompt]) 
+    # 2. Invoke fresh without appending the previous AIMessage
+    response = llm.invoke([prompt]) 
     return {"messages": [response]}
 
 def safety_critic_agent(state: ClinicalState):
@@ -52,14 +54,19 @@ def safety_critic_agent(state: ClinicalState):
     data = state['patient_data']
     budget = data.get('Daily Budget (INR)', 'unspecified')
     
+    # Extract the actual text plan from the previous UNICEF agent
+    intervention_plan = state["messages"][-1].content if state["messages"] else "No plan provided."
+    
     prompt = HumanMessage(
-        content=f"Act as a strict Chief Medical Safety Officer. Review the dietary intervention plan just generated for a {data['Age']}-year-old child. "
-                f"\nPerform a strict clinical audit:"
+        content=f"Act as a strict Chief Medical Safety Officer. Review the following dietary intervention plan generated for a {data['Age']}-year-old child:\n\n"
+                f"--- PROPOSED PLAN ---\n{intervention_plan}\n---------------------\n\n"
+                f"Perform a strict clinical audit:"
                 f"\n1. Are there any choking hazards, allergens, or age-inappropriate foods?"
                 f"\n2. Does this realistically fit within a strict daily budget of {budget} INR in {data.get('Region', 'India')}?"
                 f"\nProvide a 2-sentence 'Safety Audit Justification' followed by a final 'STATUS: VERIFIED SAFE' or 'STATUS: FLAGGED - REQUIRES HUMAN DOCTOR REVIEW'."
     )
-    response = llm.invoke(list(state["messages"]) + [prompt]) 
+    # 3. Invoke fresh with the injected plan
+    response = llm.invoke([prompt]) 
     return {"messages": [response]}
 
 # Build the Graph
