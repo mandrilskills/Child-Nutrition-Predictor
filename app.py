@@ -21,12 +21,14 @@ from agent_graph import clinical_agent_app
 
 # --- UI LAYOUT ---
 st.title("🧒 AI Pediatric Nutrition Dashboard")
+st.markdown("A Geo-Culturally Responsive & Budget-Constrained Clinical Tool")
 
 col1, col2 = st.columns([1, 2])
 
 with col1:
     st.header("Patient Intake")
     with st.container(border=True):
+        st.subheader("Physical Metrics")
         age = st.number_input("Age (in years)", 0, 15, 5)
         gender_input = st.selectbox("Gender", ["Male", "Female"])
         weight = st.slider("Weight (in kg)", 2.0, 50.0, 16.65)
@@ -34,6 +36,11 @@ with col1:
         meals_input = st.selectbox("Has Regular Meals?", ["Yes", "No"])
         fruits_input = st.selectbox("Eats Fruits/Vegetables Daily?", ["Yes", "No"])
         water_input = st.selectbox("Access to Clean Drinking Water?", ["Yes", "No"])
+        
+        st.subheader("Socio-Economic Context")
+        region = st.text_input("Region / State", value="West Bengal")
+        setting = st.selectbox("Living Setting", ["Rural", "Urban", "Peri-Urban"])
+        budget = st.number_input("Daily Food Budget (INR)", min_value=10, max_value=2000, value=60)
         
         analyze_btn = st.button("Run Clinical Analysis & Generate Report", type="primary", use_container_width=True)
 
@@ -54,7 +61,6 @@ with col2:
             status_map = {v: k for k, v in encoders['Nutrition_Status'].items()}
             ml_prediction = status_map[predicted_index]
             
-            # Calculate BMI for the report
             height_m = height / 100
             bmi = weight / (height_m ** 2)
             
@@ -62,16 +68,16 @@ with col2:
             st.error(f"Error processing inputs: {e}")
             st.stop()
 
-        # Display UI Status
         if ml_prediction == "Healthy":
             st.success(f"**ML Sensor Prediction:** {ml_prediction} ✅")
         else:
             st.error(f"**ML Sensor Prediction:** {ml_prediction} ⚠️")
             
-        with st.spinner("Compiling Comprehensive Clinical Report (PDF)..."):
+        with st.spinner("Compiling Budget-Constrained Clinical Report (PDF)..."):
             patient_dict = {
                 "Age": age, "Gender": gender_input, "Weight (kg)": weight, "Height (cm)": height,
-                "Regular Meals": meals_input, "Eats Veggies": fruits_input, "Clean Water": water_input
+                "Regular Meals": meals_input, "Eats Veggies": fruits_input, "Clean Water": water_input,
+                "Region": region, "Setting": setting, "Daily Budget (INR)": budget
             }
             
             initial_state = {
@@ -90,10 +96,9 @@ with col2:
                 st.subheader("👨‍⚕️ Clinical Analysis")
                 st.info(explainer_msg)
                 
-                st.subheader("🌐 Preventative Care & UNICEF Guidelines")
+                st.subheader("🌐 Cost-Constrained Regional Intervention")
                 st.success(unicef_msg)
                 
-                # Generate and offer PDF Download using the utils function
                 pdf_bytes = generate_pdf_report(patient_dict, bmi, ml_prediction, explainer_msg, unicef_msg)
                 
                 st.download_button(
