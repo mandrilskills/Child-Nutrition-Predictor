@@ -1,0 +1,23 @@
+{
+    "Gender": {
+        "Female": 0,
+        "Male": 1
+    },
+    "Has_Regular_Meals": {
+        "No": 0,
+        "Yes": 1
+    },
+    "Eats_Fruits_Veggies": {
+        "No": 0,
+        "Yes": 1
+    },
+    "Clean_Drinking_Water": {
+        "No": 0,
+        "Yes": 1
+    },
+    "Nutrition_Status": {
+        "At Risk": 0,
+        "Healthy": 1,
+        "Malnourished": 2
+    }
+}
