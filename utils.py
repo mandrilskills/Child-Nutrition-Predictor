@@ -1,0 +1,53 @@
+import datetime
+from fpdf import FPDF
+
+def sanitize_for_pdf(text):
+    """Replaces common unicode characters with ASCII equivalents for FPDF."""
+    text = text.replace("•", "-").replace("’", "'").replace("‘", "'").replace("”", '"').replace("“", '"').replace("–", "-").replace("—", "-")
+    return text.encode('latin-1', 'replace').decode('latin-1')
+
+def generate_pdf_report(patient_data, bmi, ml_prediction, explainer_text, unicef_text):
+    """Generates a downloadable PDF report using FPDF2."""
+    pdf = FPDF()
+    pdf.add_page()
+    
+    # Header
+    pdf.set_font("Arial", style="B", size=16)
+    pdf.cell(200, 10, txt="Comprehensive Pediatric Nutrition Report", ln=True, align='C')
+    pdf.set_font("Arial", style="I", size=10)
+    pdf.cell(200, 10, txt=f"Generated on: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", ln=True, align='C')
+    pdf.ln(5)
+    
+    # Patient Demographics
+    pdf.set_font("Arial", style="B", size=12)
+    pdf.cell(200, 10, txt="1. Patient Demographics & Metrics:", ln=True)
+    pdf.set_font("Arial", size=11)
+    for key, value in patient_data.items():
+        pdf.cell(200, 8, txt=f"   - {key}: {value}", ln=True)
+    pdf.cell(200, 8, txt=f"   - Calculated BMI: {bmi:.2f}", ln=True)
+        
+    pdf.ln(5)
+    
+    # ML Diagnosis
+    pdf.set_font("Arial", style="B", size=12)
+    pdf.cell(200, 10, txt=f"2. Diagnostic Status: {ml_prediction.upper()}", ln=True)
+    
+    pdf.ln(5)
+    
+    # AI Clinical Analysis
+    pdf.set_font("Arial", style="B", size=12)
+    pdf.cell(200, 10, txt="3. AI Clinical Analysis (LangGraph Explainer):", ln=True)
+    pdf.set_font("Arial", size=11)
+    safe_explainer_text = sanitize_for_pdf(explainer_text)
+    pdf.multi_cell(0, 8, txt=safe_explainer_text)
+    
+    pdf.ln(5)
+    
+    # UNICEF Guidelines
+    pdf.set_font("Arial", style="B", size=12)
+    pdf.cell(200, 10, txt="4. UNICEF-Aligned Care & Intervention Plan:", ln=True)
+    pdf.set_font("Arial", size=11)
+    safe_unicef_text = sanitize_for_pdf(unicef_text)
+    pdf.multi_cell(0, 8, txt=safe_unicef_text)
+    
+    return pdf.output(dest='S').encode('latin-1')
