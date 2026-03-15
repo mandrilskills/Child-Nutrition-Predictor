@@ -4,11 +4,10 @@ import numpy as np
 from dotenv import load_dotenv
 
 # Import modularized functions
-from utils import generate_pdf_report
+from utils import generate_pdf_report, get_ideal_metrics
 
 load_dotenv()
 
-# Set up the page configuration using native Streamlit settings
 st.set_page_config(page_title="Pediatric Assessment System", layout="wide")
 
 try:
@@ -29,6 +28,9 @@ st.divider()
 # --- PATIENT INTAKE FORM ---
 st.markdown("### Patient Intake Form")
 st.write("Enter the patient's anthropometric and socio-economic data for evaluation.")
+
+# Explicit Accuracy Warning
+st.warning("**Clinical Advisory:** Please ensure all provided values are strictly accurate. Providing inaccurate physical, dietary, or environmental inputs will result in false predictions and invalid clinical interventions.")
 
 with st.container(border=True):
     col_form1, col_form2, col_form3 = st.columns(3)
@@ -60,7 +62,6 @@ st.divider()
 # --- CLINICAL DASHBOARD RESULTS ---
 if analyze_btn:
     try:
-        # Encode inputs for the deterministic ML model
         input_features = [
             float(age), float(encoders['Gender'][gender_input]),
             float(weight), float(height),
@@ -75,25 +76,35 @@ if analyze_btn:
         status_map = {v: k for k, v in encoders['Nutrition_Status'].items()}
         ml_prediction = status_map[predicted_index]
         
-        # Standard BMI calculation
+        # Actual Calculations
         height_m = height / 100
-        bmi = weight / (height_m ** 2)
+        actual_bmi = weight / (height_m ** 2)
+
+        # Ideal (WHO) Calculations
+        ideal_weight, ideal_height = get_ideal_metrics(age, gender_input)
+        ideal_bmi = ideal_weight / ((ideal_height / 100) ** 2)
+
+        # Variances
+        weight_variance = weight - ideal_weight
+        height_variance = height - ideal_height
+        bmi_variance = actual_bmi - ideal_bmi
         
     except Exception as e:
         st.error(f"Processing Error: {e}")
         st.stop()
 
-    # Dashboard Metrics Row
-    st.markdown("### Assessment Results")
+    # --- COMPARATIVE DASHBOARD METRICS ---
+    st.markdown("### Comparative Anthropometric Results")
+    st.caption("Measurements compared against WHO median ideals for age and gender.")
     
-    # Using a bordered container to group the metrics professionally
     with st.container(border=True):
         col_res1, col_res2, col_res3, col_res4 = st.columns(4)
-        col_res1.metric("Patient Age", f"{age} Years")
-        col_res2.metric("Calculated BMI (Pediatric)", f"{bmi:.1f}")
-        col_res3.metric("Daily Budget Constraint", f"INR {budget}")
         
-        # ML Prediction Metric
+        # Streamlit allows us to display the actual value, and the "delta" (variance) underneath it
+        col_res1.metric("Weight (kg)", f"{weight:.1f}", f"{weight_variance:+.1f} from ideal", delta_color="inverse")
+        col_res2.metric("Height (cm)", f"{height:.1f}", f"{height_variance:+.1f} from ideal", delta_color="inverse")
+        col_res3.metric("Calculated BMI", f"{actual_bmi:.1f}", f"{bmi_variance:+.1f} from ideal", delta_color="inverse")
+        
         if ml_prediction == "Healthy":
             col_res4.metric("Diagnostic Status", "Healthy")
         else:
@@ -109,14 +120,24 @@ if analyze_btn:
 
     # Generative AI Execution
     with st.spinner("Executing Multi-Agent Clinical Evaluation & Safety Audit..."):
-        # Explicitly injecting the calculated BMI so the Explainer Agent can reference it against the Age
+        
+        # Package data for the Agentic Brain (Now with exact variances)
         patient_dict = {
-            "Age": age, "Gender": gender_input, "Weight (kg)": weight, "Height (cm)": height,
-            "Calculated BMI": round(bmi, 2), 
+            "Age": age, "Gender": gender_input, 
+            "Actual Weight": f"{weight} kg (Ideal: {ideal_weight})",
+            "Actual Height": f"{height} cm (Ideal: {ideal_height})",
+            "Calculated BMI": f"{actual_bmi:.1f} (Ideal: {ideal_bmi:.1f})", 
             "Regular Meals": meals_input, "Eats Veggies": fruits_input, "Clean Water": water_input,
             "Region": region, "Setting": setting, "Daily Budget (INR)": budget
         }
         
+        # Package data specifically for the PDF comparative table
+        comparative_table_data = [
+            {"Metric": "Weight (kg)", "Actual": f"{weight:.1f}", "Ideal": f"{ideal_weight:.1f}", "Variance": f"{weight_variance:+.1f}"},
+            {"Metric": "Height (cm)", "Actual": f"{height:.1f}", "Ideal": f"{ideal_height:.1f}", "Variance": f"{height_variance:+.1f}"},
+            {"Metric": "BMI", "Actual": f"{actual_bmi:.1f}", "Ideal": f"{ideal_bmi:.1f}", "Variance": f"{bmi_variance:+.1f}"}
+        ]
+
         initial_state = {
             "patient_data": patient_dict,
             "ml_prediction": ml_prediction,
@@ -149,8 +170,8 @@ if analyze_btn:
                 else:
                     st.warning(audit_msg)
             
-            # Generate PDF
-            pdf_bytes = generate_pdf_report(patient_dict, bmi, ml_prediction, explainer_msg, unicef_msg, audit_msg)
+            # Generate PDF with Comparative Data
+            pdf_bytes = generate_pdf_report(patient_dict, comparative_table_data, ml_prediction, explainer_msg, unicef_msg, audit_msg)
             
             st.markdown("<br>", unsafe_allow_html=True)
             st.download_button(
