@@ -8,8 +8,80 @@ from utils import generate_pdf_report
 
 load_dotenv()
 
-# Set up the page configuration (No emojis/icons for maximum professionalism)
+# Set up the page configuration
 st.set_page_config(page_title="Pediatric Assessment System", layout="wide")
+
+# --- CUSTOM CSS FOR PROFESSIONAL UI ---
+st.markdown("""
+<style>
+    /* Import Inter font from Google Fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+    /* Apply global font */
+    html, body, [class*="css"]  {
+        font-family: 'Inter', sans-serif !important;
+    }
+
+    /* Typography adjustments */
+    h1, h2, h3 {
+        color: #111827;
+        font-weight: 600 !important;
+        letter-spacing: -0.02em;
+    }
+    h4, h5, h6 {
+        color: #374151;
+        font-weight: 500 !important;
+    }
+    p {
+        color: #4B5563;
+    }
+
+    /* Style the metric cards */
+    div[data-testid="stMetric"] {
+        background-color: #ffffff;
+        border: 1px solid #E5E7EB;
+        padding: 15px 20px;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+    div[data-testid="stMetricLabel"] {
+        color: #6B7280;
+        font-weight: 500;
+        font-size: 0.875rem;
+    }
+    div[data-testid="stMetricValue"] {
+        color: #111827;
+        font-weight: 600;
+    }
+
+    /* Primary Button Styling (Enterprise Blue) */
+    div.stButton > button:first-child {
+        background-color: #0F52BA; /* Sapphire Blue */
+        color: white;
+        font-family: 'Inter', sans-serif;
+        font-weight: 500;
+        border-radius: 6px;
+        padding: 0.6rem 1.5rem;
+        border: none;
+        box-shadow: 0 2px 4px rgba(15, 82, 186, 0.2);
+        transition: all 0.2s ease-in-out;
+    }
+    div.stButton > button:first-child:hover {
+        background-color: #08367B;
+        box-shadow: 0 4px 6px rgba(15, 82, 186, 0.3);
+        transform: translateY(-1px);
+    }
+
+    /* Container adjustments */
+    div[data-testid="stVerticalBlock"] > div[style*="border"] {
+        border-radius: 8px !important;
+        border-color: #E5E7EB !important;
+        background-color: #FAFAFA;
+        padding: 1.5rem !important;
+    }
+</style>
+""", unsafe_allow_html=True)
+# --------------------------------------
 
 try:
     from model_logic import score
@@ -26,7 +98,7 @@ st.title("Pediatric Nutritional Assessment System")
 st.markdown("##### Powered by Machine Learning and Self-Auditing Agentic AI")
 st.divider()
 
-# --- PATIENT INTAKE FORM (Main Screen) ---
+# --- PATIENT INTAKE FORM ---
 st.markdown("### Patient Intake Form")
 st.markdown("Enter the patient's anthropometric and socio-economic data for evaluation.")
 
@@ -122,7 +194,7 @@ if analyze_btn:
             unicef_msg = messages[-2].content
             audit_msg = messages[-1].content
             
-            # Display Agent Outputs in Clinical-Style Containers
+            # Display Agent Outputs
             with st.container(border=True):
                 st.markdown("#### Phase 1: Clinical Analysis (Explainer Agent)")
                 st.write(explainer_msg)
