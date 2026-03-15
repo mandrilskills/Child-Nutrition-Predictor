@@ -90,7 +90,7 @@ if analyze_btn:
     with st.container(border=True):
         col_res1, col_res2, col_res3, col_res4 = st.columns(4)
         col_res1.metric("Patient Age", f"{age} Years")
-        col_res2.metric("Calculated BMI", f"{bmi:.1f}")
+        col_res2.metric("Calculated BMI (Pediatric)", f"{bmi:.1f}")
         col_res3.metric("Daily Budget Constraint", f"INR {budget}")
         
         # ML Prediction Metric
@@ -109,8 +109,10 @@ if analyze_btn:
 
     # Generative AI Execution
     with st.spinner("Executing Multi-Agent Clinical Evaluation & Safety Audit..."):
+        # Explicitly injecting the calculated BMI so the Explainer Agent can reference it against the Age
         patient_dict = {
             "Age": age, "Gender": gender_input, "Weight (kg)": weight, "Height (cm)": height,
+            "Calculated BMI": round(bmi, 2), 
             "Regular Meals": meals_input, "Eats Veggies": fruits_input, "Clean Water": water_input,
             "Region": region, "Setting": setting, "Daily Budget (INR)": budget
         }
