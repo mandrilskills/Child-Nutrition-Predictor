@@ -19,16 +19,17 @@ class ClinicalState(TypedDict):
     messages: Annotated[Sequence[BaseMessage], operator.add] 
 
 def clinical_explainer(state: ClinicalState):
-    """Explains the ML prediction based on the physical data."""
+    """Explains the ML prediction based on physical data and BMI-for-Age."""
     prompt = HumanMessage(
-        content=f"Act as a pediatric clinical AI. The ML model predicted the child is '{state['ml_prediction']}'. "
-                f"Analyze this patient data: {state['patient_data']}. Explain briefly (2-3 sentences) why this prediction makes sense. "
-                f"If the child is Healthy, explain what lifestyle factors are contributing to this positive outcome."
+        content=f"Act as a pediatric clinical AI. The deterministic ML model predicted the child's status is '{state['ml_prediction']}'. "
+                f"Analyze this patient data: {state['patient_data']}. "
+                f"CRITICAL: You must explicitly evaluate their 'Calculated BMI' against their 'Age' using standard WHO pediatric BMI-for-age indicators. "
+                f"Write a 3-sentence clinical justification explaining exactly why their specific BMI at this specific age makes the '{state['ml_prediction']}' prediction mathematically and medically accurate."
     )
-    # 1. Invoke fresh to avoid Gemini Role Errors
+    # Invoke fresh to avoid Gemini Role Errors
     response = llm.invoke([prompt])
     return {"messages": [response]}
-
+    
 def unicef_guideline_agent(state: ClinicalState):
     """Provides geo-culturally aware and budget-constrained interventions."""
     data = state['patient_data']
