@@ -8,7 +8,7 @@ from utils import generate_pdf_report
 
 load_dotenv()
 
-# Set up the page configuration without any emojis
+# Set up the page configuration (No emojis/icons for maximum professionalism)
 st.set_page_config(page_title="Pediatric Assessment System", layout="wide")
 
 try:
@@ -21,38 +21,43 @@ except Exception as e:
 
 from agent_graph import clinical_agent_app
 
-# --- SIDEBAR: PATIENT INTAKE ---
-with st.sidebar:
-    st.title("Patient Intake Form")
-    st.markdown("Enter the patient's anthropometric and socio-economic data for evaluation.")
-    st.divider()
-    
-    st.subheader("Physical Metrics")
-    age = st.number_input("Age (in years)", min_value=0, max_value=15, value=5)
-    gender_input = st.selectbox("Gender", ["Male", "Female"])
-    weight = st.slider("Weight (in kg)", min_value=2.0, max_value=50.0, value=16.65)
-    height = st.slider("Height (in cm)", min_value=40.0, max_value=150.0, value=95.0)
-    
-    st.markdown("<br>", unsafe_allow_html=True)
-    st.subheader("Dietary & Environmental Factors")
-    meals_input = st.selectbox("Consistent Regular Meals?", ["Yes", "No"])
-    fruits_input = st.selectbox("Daily Vegetable/Fruit Intake?", ["Yes", "No"])
-    water_input = st.selectbox("Access to Clean Drinking Water?", ["Yes", "No"])
-    
-    st.markdown("<br>", unsafe_allow_html=True)
-    st.subheader("Socio-Economic Context")
-    region = st.text_input("Region / State", value="West Bengal")
-    setting = st.selectbox("Living Setting", ["Rural", "Urban", "Peri-Urban"])
-    budget = st.number_input("Daily Food Budget (INR)", min_value=10, max_value=2000, value=60)
-    
-    st.divider()
-    analyze_btn = st.button("Initialize Clinical Assessment", type="primary", use_container_width=True)
-
-# --- MAIN SCREEN: CLINICAL DASHBOARD ---
+# --- MAIN SCREEN HEADER ---
 st.title("Pediatric Nutritional Assessment System")
 st.markdown("##### Powered by Machine Learning and Self-Auditing Agentic AI")
 st.divider()
 
+# --- PATIENT INTAKE FORM (Main Screen) ---
+st.markdown("### Patient Intake Form")
+st.markdown("Enter the patient's anthropometric and socio-economic data for evaluation.")
+
+with st.container(border=True):
+    col_form1, col_form2, col_form3 = st.columns(3)
+    
+    with col_form1:
+        st.markdown("#### Physical Metrics")
+        age = st.number_input("Age (in years)", min_value=0, max_value=15, value=5)
+        gender_input = st.selectbox("Gender", ["Male", "Female"])
+        weight = st.slider("Weight (in kg)", min_value=2.0, max_value=50.0, value=16.65)
+        height = st.slider("Height (in cm)", min_value=40.0, max_value=150.0, value=95.0)
+        
+    with col_form2:
+        st.markdown("#### Dietary & Environmental")
+        meals_input = st.selectbox("Consistent Regular Meals?", ["Yes", "No"])
+        fruits_input = st.selectbox("Daily Vegetable/Fruit Intake?", ["Yes", "No"])
+        water_input = st.selectbox("Access to Clean Drinking Water?", ["Yes", "No"])
+        
+    with col_form3:
+        st.markdown("#### Socio-Economic Context")
+        region = st.text_input("Region / State", value="West Bengal")
+        setting = st.selectbox("Living Setting", ["Rural", "Urban", "Peri-Urban"])
+        budget = st.number_input("Daily Food Budget (INR)", min_value=10, max_value=2000, value=60)
+        
+    st.markdown("<br>", unsafe_allow_html=True)
+    analyze_btn = st.button("Initialize Clinical Assessment", type="primary", use_container_width=True)
+
+st.divider()
+
+# --- CLINICAL DASHBOARD RESULTS ---
 if analyze_btn:
     try:
         # Encode inputs for the deterministic ML model
@@ -79,20 +84,21 @@ if analyze_btn:
         st.stop()
 
     # Dashboard Metrics Row
-    col1, col2, col3, col4 = st.columns(4)
-    col1.metric("Patient Age", f"{age} Years")
-    col2.metric("Calculated BMI", f"{bmi:.1f}")
-    col3.metric("Daily Budget Constraint", f"INR {budget}")
+    st.markdown("### Assessment Results")
+    col_res1, col_res2, col_res3, col_res4 = st.columns(4)
+    col_res1.metric("Patient Age", f"{age} Years")
+    col_res2.metric("Calculated BMI", f"{bmi:.1f}")
+    col_res3.metric("Daily Budget Constraint", f"INR {budget}")
     
     # ML Prediction Callout
     if ml_prediction == "Healthy":
-        col4.metric("Diagnostic Status", "Healthy")
+        col_res4.metric("Diagnostic Status", "Healthy")
         st.success("Primary Machine Learning evaluation indicates the patient is within healthy parameters.")
     else:
-        col4.metric("Diagnostic Status", f"{ml_prediction}")
+        col_res4.metric("Diagnostic Status", f"{ml_prediction}")
         st.error(f"Primary Machine Learning evaluation detected nutritional risk: {ml_prediction.upper()}")
 
-    st.divider()
+    st.markdown("<br>", unsafe_allow_html=True)
 
     # Generative AI Execution
     with st.spinner("Executing Multi-Agent Clinical Evaluation & Safety Audit..."):
@@ -147,10 +153,10 @@ if analyze_btn:
         else:
             st.error("System Failure: The Agentic framework failed to complete the required 3-tier audit process.")
 else:
-    # Empty State Instructions
-    st.info("System Ready. Please complete the Patient Intake Form in the sidebar and initialize the assessment.")
+    # Empty State Architecture Overview
+    st.info("System Ready. Please complete the Patient Intake Form above and initialize the assessment.")
     
-    # Architecture Overview
+    st.markdown("<br>", unsafe_allow_html=True)
     st.markdown("### System Architecture Overview")
     st.markdown("""
     This platform integrates **Machine Learning** with **Agentic AI** to provide a comprehensive public health assessment tool:
