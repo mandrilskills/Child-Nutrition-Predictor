@@ -51,7 +51,7 @@ with st.container(border=True):
     with col_form3:
         st.markdown("**Socio-Economic Context**")
         region = st.text_input("Region / State", value="West Bengal")
-        zone = st.text_input("Zone (e.g., North, South, East, West)", value="East")
+        district = st.text_input("District", value="Kolkata")
         setting = st.selectbox("Living Setting", ["Rural", "Urban", "Peri-Urban"])
         season = st.selectbox("Current Season", ["Summer", "Winter", "Monsoon"])
         budget = st.number_input("Daily Food Budget (INR)", min_value=10, max_value=2000, value=60)
@@ -122,14 +122,14 @@ if analyze_btn:
     # Generative AI Execution
     with st.spinner("Generating Dietary Insights & Precautions..."):
         
-        # Package data including new Zone and Season variables
+        # Package data including new District and Season variables
         patient_dict = {
             "Age": age, "Gender": gender_input, 
             "Actual Weight": f"{weight} kg (Ideal: {ideal_weight})",
             "Actual Height": f"{height} cm (Ideal: {ideal_height})",
             "Calculated BMI": f"{actual_bmi:.1f} (Ideal: {ideal_bmi:.1f})", 
             "Regular Meals": meals_input, "Eats Veggies": fruits_input, "Clean Water": water_input,
-            "Region": region, "Zone": zone, "Setting": setting, "Season": season, "Daily Budget (INR)": budget
+            "Region": region, "District": district, "Setting": setting, "Season": season, "Daily Budget (INR)": budget
         }
         
         comparative_table_data = [
@@ -147,7 +147,7 @@ if analyze_btn:
         final_state = clinical_agent_app.invoke(initial_state)
         messages = final_state.get("messages", [])
         
-        # Check for 2 messages instead of 3 since we removed the CMO critic
+        # Check for 2 messages
         if len(messages) >= 2:
             explainer_msg = messages[-2].content
             unicef_msg = messages[-1].content
@@ -179,7 +179,7 @@ if analyze_btn:
                 use_container_width=True
             )
         else:
-            st.error("System Failure: The Agentic framework failed to complete the analysis.")
+            st.error("System Failure: The AI framework failed to complete the analysis.")
 else:
     # Empty State Instructions
     st.info("System Ready. Please complete the Patient Intake Form above and initialize the assessment.")
