@@ -42,22 +42,19 @@ C_ACCENT_LITE = colors.HexColor("#D6EAF8")
 C_WHITE       = colors.white
 
 # Table Colors (Light Green Theme)
-C_TABLE_HEADER = colors.HexColor("#A9DFBF") # Light green header
-C_TABLE_ROW_1  = colors.HexColor("#EAFAF1") # Very light green row
-C_TABLE_ROW_2  = colors.HexColor("#D4EFDF") # Slightly darker green stripe
+C_TABLE_HEADER = colors.HexColor("#A9DFBF") 
+C_TABLE_ROW_1  = colors.HexColor("#EAFAF1") 
+C_TABLE_ROW_2  = colors.HexColor("#D4EFDF") 
 
 # Analysis Section Colors (Pink & Plum Theme)
-C_HEADING_BG   = colors.HexColor("#FADBD8") # Light Pink
-C_HEADING_TEXT = colors.HexColor("#5B2C6F") # Plum Text
+C_HEADING_BG   = colors.HexColor("#FADBD8") 
+C_HEADING_TEXT = colors.HexColor("#5B2C6F") 
 
 # Status Colors
 C_STATUS_OK   = colors.HexColor("#1E8449")   
 C_STATUS_WARN = colors.HexColor("#B7950B")   
 C_STATUS_CRIT = colors.HexColor("#922B21")   
 
-# ---------------------------------------------------------------------------
-# Text Sanitisation
-# ---------------------------------------------------------------------------
 def sanitize_for_pdf(text: str) -> str:
     emoji_pattern = re.compile(
         "[" u"\U0001F600-\U0001F64F" u"\U0001F300-\U0001F5FF" u"\U0001F680-\U0001F6FF"
@@ -74,17 +71,11 @@ def sanitize_for_pdf(text: str) -> str:
     for src, tgt in replacements.items(): text = text.replace(src, tgt)
     return text.encode("latin-1", "replace").decode("latin-1")
 
-# ---------------------------------------------------------------------------
-# Style Sheet
-# ---------------------------------------------------------------------------
 def _build_styles():
     styles = {}
     styles["doc_title"] = ParagraphStyle("doc_title", fontName="Helvetica-Bold", fontSize=18, textColor=C_WHITE, alignment=TA_CENTER, spaceAfter=2)
     styles["section_heading"] = ParagraphStyle("section_heading", fontName="Helvetica-Bold", fontSize=10, textColor=C_WHITE, alignment=TA_LEFT, leftIndent=4, spaceBefore=0, spaceAfter=0)
-    
-    # New Plum Text Style for Analysis Headings
     styles["analysis_heading"] = ParagraphStyle("analysis_heading", fontName="Helvetica-Bold", fontSize=11, textColor=C_HEADING_TEXT, alignment=TA_LEFT, leftIndent=4, spaceBefore=0, spaceAfter=0)
-    
     styles["label"] = ParagraphStyle("label", fontName="Helvetica-Bold", fontSize=9, textColor=C_DARK, alignment=TA_LEFT)
     styles["value"] = ParagraphStyle("value", fontName="Helvetica", fontSize=9, textColor=C_DARK, alignment=TA_LEFT)
     styles["body"] = ParagraphStyle("body", fontName="Helvetica", fontSize=9, textColor=C_DARK, alignment=TA_JUSTIFY, leading=14, spaceBefore=2, spaceAfter=2)
@@ -92,15 +83,10 @@ def _build_styles():
     styles["status_ok"] = ParagraphStyle("status_ok", fontName="Helvetica-Bold", fontSize=11, textColor=C_STATUS_OK, alignment=TA_CENTER)
     styles["status_warn"] = ParagraphStyle("status_warn", fontName="Helvetica-Bold", fontSize=11, textColor=C_STATUS_WARN, alignment=TA_CENTER)
     styles["status_crit"] = ParagraphStyle("status_crit", fontName="Helvetica-Bold", fontSize=11, textColor=C_STATUS_CRIT, alignment=TA_CENTER)
-    
-    # Darker text for light green table headers
     styles["table_header"] = ParagraphStyle("table_header", fontName="Helvetica-Bold", fontSize=9, textColor=C_DARK, alignment=TA_CENTER)
     styles["table_cell_center"] = ParagraphStyle("table_cell_center", fontName="Helvetica", fontSize=9, textColor=C_DARK, alignment=TA_CENTER)
     return styles
 
-# ---------------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------------
 def _section_banner(text: str, styles) -> Table:
     cell = Paragraph(text, styles["section_heading"])
     tbl = Table([[cell]], colWidths=[170 * mm])
@@ -112,7 +98,6 @@ def _section_banner(text: str, styles) -> Table:
     return tbl
 
 def _analysis_banner(text: str, styles) -> Table:
-    """Light Pink background banner with Plum text for analysis sections."""
     cell = Paragraph(text, styles["analysis_heading"])
     tbl = Table([[cell]], colWidths=[170 * mm])
     tbl.setStyle(TableStyle([
@@ -130,11 +115,11 @@ def _kv_table(rows: list, styles) -> Table:
         ("TOPPADDING", (0, 0), (-1, -1), 5), ("BOTTOMPADDING",(0,0), (-1, -1), 5),
         ("LEFTPADDING", (0, 0), (-1, -1), 8), ("RIGHTPADDING",(0, 0), (-1, -1), 8),
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-        ("BACKGROUND", (0, 0), (-1, -1), C_TABLE_ROW_1), # Light green base
+        ("BACKGROUND", (0, 0), (-1, -1), C_TABLE_ROW_1),
     ]
     for i in range(len(table_data)):
         if i % 2 == 1:
-            style_cmds.append(("BACKGROUND", (0, i), (-1, i), C_TABLE_ROW_2)) # Darker green stripe
+            style_cmds.append(("BACKGROUND", (0, i), (-1, i), C_TABLE_ROW_2))
 
     tbl = Table(table_data, colWidths=col_w)
     tbl.setStyle(TableStyle(style_cmds))
@@ -154,7 +139,7 @@ def _comparative_table(data: list, styles) -> Table:
     col_w = [42.5 * mm] * 4
     tbl = Table(table_data, colWidths=col_w)
     style_cmds = [
-        ("BACKGROUND", (0, 0), (-1, 0), C_TABLE_HEADER), # Light green header
+        ("BACKGROUND", (0, 0), (-1, 0), C_TABLE_HEADER),
         ("GRID", (0, 0), (-1, -1), 0.5, C_LIGHT),
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
         ("TOPPADDING", (0, 0), (-1, -1), 6), ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
@@ -254,7 +239,7 @@ def generate_pdf_report(
     # SECTION 1
     story.append(_section_banner("1. Patient Demographics & Context", styles))
     story.append(Spacer(1, 3 * mm))
-    display_keys = ["Age", "Gender", "Region", "Zone", "Setting", "Season", "Regular Meals", "Eats Veggies", "Clean Water"]
+    display_keys = ["Age", "Gender", "Region", "District", "Setting", "Season", "Regular Meals", "Eats Veggies", "Clean Water"]
     kv_rows = [(k, patient_data[k]) for k in display_keys if k in patient_data]
     story.append(KeepTogether([_kv_table(kv_rows, styles)]))
     story.append(Spacer(1, 5 * mm))
@@ -272,7 +257,7 @@ def generate_pdf_report(
         ("Patient Age", f"{patient_data.get('Age', '—')} yrs"),
         ("BMI Score", str(patient_data.get("Calculated BMI", "—").split()[0])),
         ("Daily Budget", f"INR {patient_data.get('Daily Budget (INR)', '—')}"),
-        ("Zone/Season", f"{patient_data.get('Zone', '—')} / {patient_data.get('Season', '—')}"),
+        ("District/Season", f"{patient_data.get('District', '—')} / {patient_data.get('Season', '—')}"),
     ]
     story.append(_metrics_row(metrics, styles))
     story.append(Spacer(1, 4 * mm))
@@ -288,14 +273,14 @@ def generate_pdf_report(
     story.append(KeepTogether([status_tbl]))
     story.append(Spacer(1, 5 * mm))
 
-    # SECTION 4 - Clinical Analysis (Light Pink / Plum style)
+    # SECTION 4 - Clinical Analysis
     story.append(_analysis_banner("4. Clinical Analysis", styles))
     story.append(Spacer(1, 3 * mm))
     ai_blocks = _ai_text_block(explainer_text, styles)
     if ai_blocks: story.extend(ai_blocks)  
     story.append(Spacer(1, 5 * mm))
 
-    # SECTION 5 - Dietary Precautions (Light Pink / Plum style)
+    # SECTION 5 - Dietary Precautions
     story.append(_analysis_banner("5. Dietary Intervention & Precautions", styles))
     story.append(Spacer(1, 3 * mm))
     ai_blocks = _ai_text_block(unicef_text, styles)
