@@ -47,6 +47,8 @@ with st.container(border=True):
         meals_input = st.selectbox("Consistent Regular Meals?", ["Yes", "No"])
         fruits_input = st.selectbox("Daily Vegetable/Fruit Intake?", ["Yes", "No"])
         water_input = st.selectbox("Access to Clean Drinking Water?", ["Yes", "No"])
+        diet_pref = st.selectbox("Dietary Preference", ["None", "Pure Vegetarian", "Eggetarian", "Vegan", "Halal"])
+        market_shock = st.text_input("Unavailable/Expensive Foods", placeholder="e.g., Tomatoes, Onion")
         
     with col_form3:
         st.markdown("**Socio-Economic Context**")
@@ -122,13 +124,14 @@ if analyze_btn:
     # Generative AI Execution
     with st.spinner("Generating Dietary Insights & Precautions..."):
         
-        # Package data including new District and Season variables
+        # Package data including the new restrictions and shocks
         patient_dict = {
             "Age": age, "Gender": gender_input, 
             "Actual Weight": f"{weight} kg (Ideal: {ideal_weight})",
             "Actual Height": f"{height} cm (Ideal: {ideal_height})",
             "Calculated BMI": f"{actual_bmi:.1f} (Ideal: {ideal_bmi:.1f})", 
             "Regular Meals": meals_input, "Eats Veggies": fruits_input, "Clean Water": water_input,
+            "Dietary Preference": diet_pref, "Market Shocks": market_shock if market_shock else "None",
             "Region": region, "District": district, "Setting": setting, "Season": season, "Daily Budget (INR)": budget
         }
         
