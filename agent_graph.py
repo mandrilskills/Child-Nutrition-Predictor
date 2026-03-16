@@ -38,15 +38,19 @@ def unicef_guideline_agent(state: ClinicalState):
     district = data.get('District', 'their local district')
     setting = data.get('Setting', 'standard')
     season = data.get('Season', 'current')
+    diet_pref = data.get('Dietary Preference', 'None')
+    market_shocks = data.get('Market Shocks', 'None')
     
     prompt = HumanMessage(
         content=f"Act as a helpful public health nutritionist. The child is classified as '{state['ml_prediction']}' with these stats: {data}. "
                 f"\n\nCRITICAL CONSTRAINTS:"
                 f"\n1. Budget: All dietary recommendations MUST be strictly affordable within a daily food budget of {budget} INR."
                 f"\n2. Geography & Season: Only recommend hyper-local foods native to the {district} district of {region}, specifically suitable for the {season} season in a {setting} setting."
-                f"\n3. Format: You MUST be extremely concise. Use SHORT BULLET POINTS only. Do NOT write long paragraphs. Keep explanations to 1-2 lines per bullet."
-                f"\n4. Language: Use very simple, precise, and jargon-free English."
-                f"\n5. Safety & Precautions: You MUST embed short, practical precautions inside the bullet points (e.g., 'mash well to avoid choking', 'boil water properly', 'substitute with...')."
+                f"\n3. Dietary Restrictions: The patient's diet is strictly '{diet_pref}'. Do NOT recommend any foods that violate this restriction."
+                f"\n4. Market Shocks: The following foods are currently too expensive or unavailable: '{market_shocks}'. DO NOT recommend them. Suggest affordable local alternatives."
+                f"\n5. Format: You MUST be extremely concise. Use SHORT BULLET POINTS only. Do NOT write long paragraphs. Keep explanations to 1-2 lines per bullet."
+                f"\n6. Language: Use very simple, precise, and jargon-free English."
+                f"\n7. Safety & Precautions: You MUST embed short, practical precautions inside the bullet points (e.g., 'mash well to avoid choking', 'boil water properly', 'substitute with...')."
                 f"\n\nINSTRUCTIONS:"
                 f"\nProvide exactly 3 to 4 specific, actionable, and ultra-short bulleted dietary steps."
     )
