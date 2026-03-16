@@ -19,36 +19,36 @@ class ClinicalState(TypedDict):
     messages: Annotated[Sequence[BaseMessage], operator.add] 
 
 def clinical_explainer(state: ClinicalState):
-    """Explains the ML prediction based on physical data and BMI-for-Age."""
+    """Explains the ML prediction based on physical data and BMI-for-Age using simple language."""
     prompt = HumanMessage(
-        content=f"Act as a helpful pediatric assistant. The system predicted the child's status is '{state['ml_prediction']}'. "
+        content=f"Act as a helpful health assistant. The system predicted the child's status is '{state['ml_prediction']}'. "
                 f"Analyze this patient data: {state['patient_data']}. "
-                f"CRITICAL: Evaluate their 'Calculated BMI' against their 'Age' using standard WHO pediatric guidelines. "
-                f"Write a 3-sentence explanation of why the system gave this result. Use very simple, jargon-free everyday English so a common person can understand."
+                f"You must evaluate their 'Calculated BMI' against their 'Age' based on WHO guidelines. "
+                f"Write a 3-sentence explanation of why the child received this prediction. "
+                f"CRITICAL: Use very simple, everyday English. Avoid heavy medical jargon. Explain it so any common person can understand clearly."
     )
     response = llm.invoke([prompt])
     return {"messages": [response]}
 
 def unicef_guideline_agent(state: ClinicalState):
-    """Provides geo-culturally aware, budget-constrained, and safe interventions."""
+    """Provides geo-culturally aware, budget-constrained interventions with built-in safety precautions."""
     data = state['patient_data']
     budget = data.get('Daily Budget (INR)', 'unspecified')
     region = data.get('Region', 'their local region')
-    zone = data.get('Zone', '')
-    season = data.get('Season', 'current season')
+    district = data.get('District', 'their local district')
     setting = data.get('Setting', 'standard')
+    season = data.get('Season', 'current')
     
     prompt = HumanMessage(
-        content=f"Act as a practical public health nutritionist. The child is classified as '{state['ml_prediction']}' with these stats: {data}. "
-                f"\n\nCONTEXT:"
-                f"\n1. Budget: Daily food budget of {budget} INR."
-                f"\n2. Environment: {zone}, {region} ({setting} setting). Season: {season}."
+        content=f"Act as a helpful public health nutritionist. The child is classified as '{state['ml_prediction']}' with these stats: {data}. "
+                f"\n\nCRITICAL CONSTRAINTS:"
+                f"\n1. Budget: All dietary recommendations MUST be strictly affordable within a daily food budget of {budget} INR."
+                f"\n2. Geography & Season: Only recommend hyper-local foods native to the {district} district of {region}, specifically suitable for the {season} season in a {setting} setting."
+                f"\n3. Format: You MUST be extremely concise. Use SHORT BULLET POINTS only. Do NOT write long paragraphs. Keep explanations to 1-2 lines per bullet."
+                f"\n4. Language: Use very simple, precise, and jargon-free English."
+                f"\n5. Safety & Precautions: You MUST embed short, practical precautions inside the bullet points (e.g., 'mash well to avoid choking', 'boil water properly', 'substitute with...')."
                 f"\n\nINSTRUCTIONS:"
-                f"\n- Provide 3-4 specific, actionable, and hyper-local dietary measures using seasonal and affordable ingredients."
-                f"\n- CRITICAL: Explain *why* these foods help in simple, easy-to-understand everyday language (NO medical jargon)."
-                f"\n- CRITICAL SAFETY: Include preparation precautions directly in the suggestions (e.g., 'mash well to avoid choking', 'boil lentils thoroughly for easier digestion')."
-                f"\n- Note if the budget is highly restrictive, but provide the best possible options within it."
-                f"\n- Conclude the response with a bold note stating: '**Doctor intervention is required for a formal clinical diagnosis and treatment plan.**'"
+                f"\nProvide exactly 3 to 4 specific, actionable, and ultra-short bulleted dietary steps."
     )
     response = llm.invoke([prompt]) 
     return {"messages": [response]}
@@ -58,7 +58,7 @@ workflow = StateGraph(ClinicalState)
 workflow.add_node("explainer", clinical_explainer)
 workflow.add_node("unicef_agent", unicef_guideline_agent)
 
-# Linear execution
+# Linear execution 
 workflow.set_entry_point("explainer")
 workflow.add_edge("explainer", "unicef_agent")
 workflow.add_edge("unicef_agent", END)
