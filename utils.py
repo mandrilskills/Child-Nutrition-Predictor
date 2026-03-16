@@ -239,7 +239,7 @@ def generate_pdf_report(
     # SECTION 1
     story.append(_section_banner("1. Patient Demographics & Context", styles))
     story.append(Spacer(1, 3 * mm))
-    display_keys = ["Age", "Gender", "Region", "District", "Setting", "Season", "Regular Meals", "Eats Veggies", "Clean Water"]
+    display_keys = ["Age", "Gender", "Region", "District", "Setting", "Season", "Dietary Preference", "Market Shocks", "Regular Meals", "Eats Veggies", "Clean Water"]
     kv_rows = [(k, patient_data[k]) for k in display_keys if k in patient_data]
     story.append(KeepTogether([_kv_table(kv_rows, styles)]))
     story.append(Spacer(1, 5 * mm))
