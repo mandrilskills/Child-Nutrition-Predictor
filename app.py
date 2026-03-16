@@ -22,7 +22,7 @@ from agent_graph import clinical_agent_app
 
 # --- MAIN SCREEN HEADER ---
 st.title("Pediatric Nutritional Assessment System")
-st.caption("Powered by Machine Learning and Self-Auditing Agentic AI")
+st.caption("Powered by Machine Learning and AI Insights")
 st.divider()
 
 # --- PATIENT INTAKE FORM ---
@@ -51,7 +51,9 @@ with st.container(border=True):
     with col_form3:
         st.markdown("**Socio-Economic Context**")
         region = st.text_input("Region / State", value="West Bengal")
+        zone = st.text_input("Zone (e.g., North, South, East, West)", value="East")
         setting = st.selectbox("Living Setting", ["Rural", "Urban", "Peri-Urban"])
+        season = st.selectbox("Current Season", ["Summer", "Winter", "Monsoon"])
         budget = st.number_input("Daily Food Budget (INR)", min_value=10, max_value=2000, value=60)
         
     st.markdown("<br>", unsafe_allow_html=True)
@@ -100,7 +102,7 @@ if analyze_btn:
     with st.container(border=True):
         col_res1, col_res2, col_res3, col_res4 = st.columns(4)
         
-        # Streamlit allows us to display the actual value, and the "delta" (variance) underneath it
+        # Streamlit metric UI
         col_res1.metric("Weight (kg)", f"{weight:.1f}", f"{weight_variance:+.1f} from ideal", delta_color="inverse")
         col_res2.metric("Height (cm)", f"{height:.1f}", f"{height_variance:+.1f} from ideal", delta_color="inverse")
         col_res3.metric("Calculated BMI", f"{actual_bmi:.1f}", f"{bmi_variance:+.1f} from ideal", delta_color="inverse")
@@ -110,7 +112,6 @@ if analyze_btn:
         else:
             col_res4.metric("Diagnostic Status", f"{ml_prediction}")
 
-    # Explicit Callout for Status
     if ml_prediction == "Healthy":
         st.success("Primary Machine Learning evaluation indicates the patient is within healthy parameters.")
     else:
@@ -119,19 +120,18 @@ if analyze_btn:
     st.markdown("<br>", unsafe_allow_html=True)
 
     # Generative AI Execution
-    with st.spinner("Executing Multi-Agent Clinical Evaluation & Safety Audit..."):
+    with st.spinner("Generating Dietary Insights & Precautions..."):
         
-        # Package data for the Agentic Brain (Now with exact variances)
+        # Package data including new Zone and Season variables
         patient_dict = {
             "Age": age, "Gender": gender_input, 
             "Actual Weight": f"{weight} kg (Ideal: {ideal_weight})",
             "Actual Height": f"{height} cm (Ideal: {ideal_height})",
             "Calculated BMI": f"{actual_bmi:.1f} (Ideal: {ideal_bmi:.1f})", 
             "Regular Meals": meals_input, "Eats Veggies": fruits_input, "Clean Water": water_input,
-            "Region": region, "Setting": setting, "Daily Budget (INR)": budget
+            "Region": region, "Zone": zone, "Setting": setting, "Season": season, "Daily Budget (INR)": budget
         }
         
-        # Package data specifically for the PDF comparative table
         comparative_table_data = [
             {"Metric": "Weight (kg)", "Actual": f"{weight:.1f}", "Ideal": f"{ideal_weight:.1f}", "Variance": f"{weight_variance:+.1f}"},
             {"Metric": "Height (cm)", "Actual": f"{height:.1f}", "Ideal": f"{ideal_height:.1f}", "Variance": f"{height_variance:+.1f}"},
@@ -147,31 +147,27 @@ if analyze_btn:
         final_state = clinical_agent_app.invoke(initial_state)
         messages = final_state.get("messages", [])
         
-        if len(messages) >= 3:
-            explainer_msg = messages[-3].content
-            unicef_msg = messages[-2].content
-            audit_msg = messages[-1].content
+        # Check for 2 messages instead of 3 since we removed the CMO critic
+        if len(messages) >= 2:
+            explainer_msg = messages[-2].content
+            unicef_msg = messages[-1].content
             
-            st.markdown("### Agentic Analysis & Interventions")
+            st.markdown("### Analysis & Interventions")
             
-            # Display Agent Outputs using native bordered containers
+            # Display Outputs with common names
             with st.container(border=True):
-                st.markdown("**Phase 1: Clinical Analysis (Explainer Agent)**")
+                st.markdown("**Phase 1: Clinical Analysis**")
                 st.info(explainer_msg)
             
             with st.container(border=True):
-                st.markdown("**Phase 2: Socio-Economic Intervention (Policy Agent)**")
+                st.markdown("**Phase 2: Dietary Intervention & Precautions**")
                 st.write(unicef_msg)
-
-            with st.container(border=True):
-                st.markdown("**Phase 3: Medical Guardrail (Critic Agent)**")
-                if "VERIFIED SAFE" in audit_msg.upper():
-                    st.success(audit_msg)
-                else:
-                    st.warning(audit_msg)
+                
+            # Doctor Intervention UI Disclaimer
+            st.error("**DOCTOR INTERVENTION REQUIRED:** This system provides initial dietary insights and precautions based on socio-economic constraints. It does NOT replace professional medical diagnosis. A thorough evaluation by a qualified pediatrician is strictly required.")
             
-            # Generate PDF with Comparative Data
-            pdf_bytes = generate_pdf_report(patient_dict, comparative_table_data, ml_prediction, explainer_msg, unicef_msg, audit_msg)
+            # Generate PDF 
+            pdf_bytes = generate_pdf_report(patient_dict, comparative_table_data, ml_prediction, explainer_msg, unicef_msg)
             
             st.markdown("<br>", unsafe_allow_html=True)
             st.download_button(
@@ -183,7 +179,7 @@ if analyze_btn:
                 use_container_width=True
             )
         else:
-            st.error("System Failure: The Agentic framework failed to complete the required 3-tier audit process.")
+            st.error("System Failure: The Agentic framework failed to complete the analysis.")
 else:
     # Empty State Instructions
     st.info("System Ready. Please complete the Patient Intake Form above and initialize the assessment.")
