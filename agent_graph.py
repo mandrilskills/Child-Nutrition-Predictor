@@ -31,7 +31,7 @@ def clinical_explainer(state: ClinicalState):
     return {"messages": [response]}
 
 def unicef_guideline_agent(state: ClinicalState):
-    """Provides geo-culturally aware, budget-constrained interventions with built-in safety precautions."""
+    """Provides geo-culturally aware, budget-constrained interventions with structured UNICEF guidance."""
     data = state['patient_data']
     budget = data.get('Daily Budget (INR)', 'unspecified')
     region = data.get('Region', 'their local region')
@@ -42,17 +42,33 @@ def unicef_guideline_agent(state: ClinicalState):
     market_shocks = data.get('Market Shocks', 'None')
     
     prompt = HumanMessage(
-        content=f"Act as a helpful public health nutritionist. The child is classified as '{state['ml_prediction']}' with these stats: {data}. "
+        content=f"Act as a helpful public health nutritionist and UNICEF pediatric expert. The child is classified as '{state['ml_prediction']}' with these stats: {data}. "
                 f"\n\nCRITICAL CONSTRAINTS:"
                 f"\n1. Budget: All dietary recommendations MUST be strictly affordable within a daily food budget of {budget} INR."
                 f"\n2. Geography & Season: Only recommend hyper-local foods native to the {district} district of {region}, specifically suitable for the {season} season in a {setting} setting."
                 f"\n3. Dietary Restrictions: The patient's diet is strictly '{diet_pref}'. Do NOT recommend any foods that violate this restriction."
                 f"\n4. Market Shocks: The following foods are currently too expensive or unavailable: '{market_shocks}'. DO NOT recommend them. Suggest affordable local alternatives."
-                f"\n5. Format: You MUST be extremely concise. Use SHORT BULLET POINTS only. Do NOT write long paragraphs. Keep explanations to 1-2 lines per bullet."
+                f"\n5. UNICEF Alignment: Ensure all nutritional advice aligns with global UNICEF pediatric guidelines for this specific age group."
                 f"\n6. Language: Use very simple, precise, and jargon-free English."
-                f"\n7. Safety & Precautions: You MUST embed short, practical precautions inside the bullet points (e.g., 'mash well to avoid choking', 'boil water properly', 'substitute with...')."
-                f"\n\nINSTRUCTIONS:"
-                f"\nProvide exactly 3 to 4 specific, actionable, and ultra-short bulleted dietary steps."
+                f"\n\nFORMAT INSTRUCTIONS:"
+                f"\nYou MUST strictly follow this exact structure using short bullet points. Keep explanations to 1-2 lines maximum per point. You may add extra bullet points under each section if necessary."
+                f"\n\nSuggested Diet (UNICEF Aligned):"
+                f"\n- Morning: [Short dietary tip]"
+                f"\n- Afternoon: [Short dietary tip]"
+                f"\n- Evening: [Short dietary tip]"
+                f"\n- Night: [Short dietary tip]"
+                f"\n\nProcessing / Cooking Tips:"
+                f"\n- [Tip 1 - e.g., how to retain nutrients or prepare locally]"
+                f"\n- [Tip 2]"
+                f"\n- [Tip 3]"
+                f"\n\nPrecautionary Measures:"
+                f"\n- [Measure 1 - e.g., choking hazards, water boiling, allergen warnings]"
+                f"\n- [Measure 2]"
+                f"\n- [Measure 3]"
+                f"\n\nHealthy Alternatives (matching '{diet_pref}' preference):"
+                f"\n- [Alternative 1]"
+                f"\n- [Alternative 2]"
+                f"\n- [Alternative 3]"
     )
     response = llm.invoke([prompt]) 
     return {"messages": [response]}
