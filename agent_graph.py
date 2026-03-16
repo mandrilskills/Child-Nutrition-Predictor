@@ -21,65 +21,46 @@ class ClinicalState(TypedDict):
 def clinical_explainer(state: ClinicalState):
     """Explains the ML prediction based on physical data and BMI-for-Age."""
     prompt = HumanMessage(
-        content=f"Act as a pediatric clinical AI. The deterministic ML model predicted the child's status is '{state['ml_prediction']}'. "
+        content=f"Act as a helpful pediatric assistant. The system predicted the child's status is '{state['ml_prediction']}'. "
                 f"Analyze this patient data: {state['patient_data']}. "
-                f"CRITICAL: You must explicitly evaluate their 'Calculated BMI' against their 'Age' using standard WHO pediatric BMI-for-age indicators. "
-                f"Write a 3-sentence clinical justification explaining exactly why their specific BMI at this specific age makes the '{state['ml_prediction']}' prediction mathematically and medically accurate."
+                f"CRITICAL: Evaluate their 'Calculated BMI' against their 'Age' using standard WHO pediatric guidelines. "
+                f"Write a 3-sentence explanation of why the system gave this result. Use very simple, jargon-free everyday English so a common person can understand."
     )
-    # Invoke fresh to avoid Gemini Role Errors
     response = llm.invoke([prompt])
     return {"messages": [response]}
-    
+
 def unicef_guideline_agent(state: ClinicalState):
-    """Provides geo-culturally aware and budget-constrained interventions."""
+    """Provides geo-culturally aware, budget-constrained, and safe interventions."""
     data = state['patient_data']
     budget = data.get('Daily Budget (INR)', 'unspecified')
     region = data.get('Region', 'their local region')
+    zone = data.get('Zone', '')
+    season = data.get('Season', 'current season')
     setting = data.get('Setting', 'standard')
     
     prompt = HumanMessage(
-        content=f"Act as a public health economist and UNICEF pediatric expert. "
-                f"The child is classified as '{state['ml_prediction']}' with these stats: {data}. "
-                f"\n\nCRITICAL CONSTRAINTS:"
-                f"\n1. Budget: All dietary recommendations MUST be strictly affordable within a daily food budget of {budget} INR."
-                f"\n2. Geography: Only recommend indigenous, hyper-local foods native to {region} in a {setting} setting."
+        content=f"Act as a practical public health nutritionist. The child is classified as '{state['ml_prediction']}' with these stats: {data}. "
+                f"\n\nCONTEXT:"
+                f"\n1. Budget: Daily food budget of {budget} INR."
+                f"\n2. Environment: {zone}, {region} ({setting} setting). Season: {season}."
                 f"\n\nINSTRUCTIONS:"
-                f"\nProvide 3-4 specific, actionable measures. Keep it professional, bulleted, and highly concise."
+                f"\n- Provide 3-4 specific, actionable, and hyper-local dietary measures using seasonal and affordable ingredients."
+                f"\n- CRITICAL: Explain *why* these foods help in simple, easy-to-understand everyday language (NO medical jargon)."
+                f"\n- CRITICAL SAFETY: Include preparation precautions directly in the suggestions (e.g., 'mash well to avoid choking', 'boil lentils thoroughly for easier digestion')."
+                f"\n- Note if the budget is highly restrictive, but provide the best possible options within it."
+                f"\n- Conclude the response with a bold note stating: '**Doctor intervention is required for a formal clinical diagnosis and treatment plan.**'"
     )
-    # 2. Invoke fresh without appending the previous AIMessage
     response = llm.invoke([prompt]) 
     return {"messages": [response]}
 
-def safety_critic_agent(state: ClinicalState):
-    """Acts as the Chief Medical Officer to audit the AI's own recommendations."""
-    data = state['patient_data']
-    budget = data.get('Daily Budget (INR)', 'unspecified')
-    
-    # Extract the actual text plan from the previous UNICEF agent
-    intervention_plan = state["messages"][-1].content if state["messages"] else "No plan provided."
-    
-    prompt = HumanMessage(
-        content=f"Act as a strict Chief Medical Safety Officer. Review the following dietary intervention plan generated for a {data['Age']}-year-old child:\n\n"
-                f"--- PROPOSED PLAN ---\n{intervention_plan}\n---------------------\n\n"
-                f"Perform a strict clinical audit:"
-                f"\n1. Are there any choking hazards, allergens, or age-inappropriate foods?"
-                f"\n2. Does this realistically fit within a strict daily budget of {budget} INR in {data.get('Region', 'India')}?"
-                f"\nProvide a 2-sentence 'Safety Audit Justification' followed by a final 'STATUS: VERIFIED SAFE' or 'STATUS: FLAGGED - REQUIRES HUMAN DOCTOR REVIEW'."
-    )
-    # 3. Invoke fresh with the injected plan
-    response = llm.invoke([prompt]) 
-    return {"messages": [response]}
-
-# Build the Graph
+# Build the Graph (2-Tier Architecture now)
 workflow = StateGraph(ClinicalState)
 workflow.add_node("explainer", clinical_explainer)
 workflow.add_node("unicef_agent", unicef_guideline_agent)
-workflow.add_node("safety_critic", safety_critic_agent)
 
-# Linear execution with the safety guardrail
+# Linear execution
 workflow.set_entry_point("explainer")
 workflow.add_edge("explainer", "unicef_agent")
-workflow.add_edge("unicef_agent", "safety_critic")
-workflow.add_edge("safety_critic", END)
+workflow.add_edge("unicef_agent", END)
 
 clinical_agent_app = workflow.compile()
